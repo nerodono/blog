@@ -127,6 +127,8 @@ Main objective of this article, basically our parser will consist of two compone
 1. Precedence store  - store where 
 2. Expression parser - main logic of the parser
 
+**NOTE**: The parser will not implement unary operations, it's pretty easy to tweak parser to implement it.
+
 ### What's a Precedence store?
 
 Basically just a map with some additional quirks for hierarchy:
@@ -183,7 +185,7 @@ And it will work... As far your operators map doesn't contain operators with sam
 1 + 2 - 3
 ```
 
-It will successfuly parse (+ 1 2) and return "- 3" as the tail, because `-` has same precedence as the `+`. Why is that so? It'll
+It will successfuly parse (+ 1 2) and return "- 3" as the tail, because `-` has same precedence as the `+`. Why is that so? I'll
 explain it further later, so pay attention!
 
 ### Actual parser
@@ -192,4 +194,11 @@ We need exactly two things:
 - factor - items with the highest possible precedence
 - expression - items with the lower precedence
 
-or not two, there's one more thing: AST representation
+or not two, there's one more thing: AST representation.
+
+```haskell
+data Expr = EBinary Operator Expr Expr
+          | ENumber Integer
+```
+
+That's all we need
