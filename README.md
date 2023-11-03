@@ -1,2 +1,0 @@
-# blog
-trashcan of thoughts

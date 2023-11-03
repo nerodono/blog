@@ -1,0 +1,34 @@
+{{ partial "head.html" . }}
+<style type="text/css" media="screen">
+	article > a p {
+		margin-bottom: 0;
+	}
+</style>
+
+<script type="text/javascript">
+ const colors = ["#ebdbb2", "#fb4934", "#b8bb26", "#fabd2f", "#83a598", "#d3869b", "#8ec07c", "#fe8019"];
+ let color_id = 0;
+ window.onload = () => {
+	const heading = document.querySelector("header > h1");
+	const setHeadingColor = color => heading.style.color = colors[color];
+
+	setHeadingColor(Math.round(Math.random()*colors.length));
+
+	heading.addEventListener("click", () => {
+		if (++color_id == colors.length) color_id = 0;
+		setHeadingColor(color_id);
+	})
+ }
+</script>
+<header><h1 style="text-decoration: underline; user-select: none; color: #ebdbb2;" id="tag_{{ .Title }}">{{ .Title | title }}</h1></header>
+
+<article>
+{{ .Content -}}
+{{ range (.Pages.ByParam "position") }}
+	<a style="border: 1px solid #1d2021; border-radius: 5px; padding: 1.5rem; color: inherit; display: block; text-decoration: none;" href="{{ .RelPermalink }}">
+		<h1 style="margin: 0; margin-bottom: 1rem;">{{ .Title }}</h1>
+		{{ .Description }}
+	</a><br>
+{{ end }}
+</article>
+{{ partial "footer.html" . }}

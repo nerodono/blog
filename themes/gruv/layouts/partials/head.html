@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="{{ .Site.Language }}">
+<head>
+	<title>{{ if not .IsHome }}{{ .Title | title }} | {{ end }}{{ .Site.Title }}</title>
+	<link rel="canonical" href="{{ .Site.BaseURL }}">
+	<link rel='alternate' type='application/rss+xml' title="{{ .Site.Title }} RSS" href='/index.xml'>
+	<link rel='stylesheet' type='text/css' href='/style.css'>
+    {{ if not .IsHome }}
+        <link rel='stylesheet' type='text/css' href='/syntax.css'>
+    {{ end }}
+
+	{{ with .Site.Params.favicon }}
+        <link rel="icon" href="{{ . }}">
+	{{ end -}}
+
+	<meta name="description" content="{{ with .Params.description }}{{ . }}{{ else }}{{ .Summary }}{{ end }}">
+
+	{{ if isset .Params "tags" }}
+        <meta name="keywords" content="{{ with .Params.tags }}{{ delimit . ", " }}{{ end }}">
+	{{ end -}}
+
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="robots" content="index, follow">
+	<meta charset="utf-8">
+</head>
+<body>
+{{ if not .IsHome }}
+<a href="/" style="position: absolute; top: 20px; left: 20px;">
+    <style type="text/css" media="screen">
+        body a > svg:hover {
+            fill: #a89984;
+        }
+    </style>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#928374" class="bi bi-house-door-fill" viewBox="0 0 16 16">
+        <path d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5z"/>
+    </svg>
+</a>
+{{ end }}
+<main>
