@@ -173,7 +173,7 @@ fromList list' =
 
 Wait, why is **scope** even needed? Well, that's the key aspect of generalization, I call it "splitting".
 Still remember the idea of recursive descent? The lower precedence items are compound of higher precedence,
-the naive algorithm general algorithm will do as follows:
+the naive general algorithm will do as follows:
 - Pick lowest precedence from the store
 - Remove it from the **scope**
 - Proceed it
