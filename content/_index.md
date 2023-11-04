@@ -5,7 +5,8 @@ type = "homepage"
 
 ## About
 
-Person seeking for knowledge
+Person seeking for knowledge.
+My blogging skills isn't good enough, especially in english, so expect older article to be worse written than newer ones.
 
 ### Contacts
 
