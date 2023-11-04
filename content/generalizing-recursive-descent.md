@@ -589,3 +589,4 @@ Works as expected
 As you can see recursive descent is pretty easily can be generalized and, as said in the craftinginterpreters book: [It rocks.](https://craftinginterpreters.com/parsing-expressions.html#recursive-descent-parsing)
 
 Now go write your own language for the great good!
+Resulting code you can find on the [gist](https://gist.github.com/nerodono/c78a012c009331e8ab8b40a0f3845f8d)
