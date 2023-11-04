@@ -416,7 +416,7 @@ ghci> parseTextAsSExpr "1 + 2 + 3*3 + 4"
 Just ("(+ (+ (+ 1 2) (* 3 3)) 4)",[])
 ```
 
-Nice! Works as expected, but what if we try using brackets?
+Nice! Works as expected, but what if we try use brackets?
 ```haskell
 ghci> parseTextAsSExpr "2 + 2 * 2"
 Just ("(+ 2 (* 2 2))",[])
