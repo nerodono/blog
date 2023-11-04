@@ -12,7 +12,7 @@ This is just for review
 ---
 
 The recursive descent parser is the first algorithm that comes to mind when your task is to write
-expression parser, so, the example grammar of simple language that can add and multiple things will look like this:
+expression parser, so, the example grammar of a simple language that can add multiple things will look like this:
 
 ```ebnf
 digit  = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
@@ -26,12 +26,12 @@ factor = number
 expression = term { "+" term };
 ```
 
-Whitespaces are ignored. This will parse the following expressions:
+Whitespaces are ignored. This will parse into the following expressions:
 - `1+2*3` as `(+ 1 (* 2 3))`
 - `1+2*4+3` as `(+ (+ 1 (* 2 4)) 3)`
 
-And so on, grammar is really primitive, so further examples are meaningless.
-Main idea of the algorithm is that items of lower precedence are compund of higher precedence items, like so:
+And so on, grammar is really primitive, so further examples are unnecessary.
+Main idea of the algorithm is that items of lower precedence are compound of higher precedence items, like so:
 ```text
 t - term
 f - factor
@@ -45,27 +45,27 @@ p - exponentiation
     f^f     f^f
 ```
 
-I added exponentiation to make schema easier to understand.
+I added exponentiation to make the schema easier to understand.
 But what if we want
 - Arbitrary number of operators?
 - Arbitrary number of precedences?
 
-It can be useful to tweak parser with no actual effort or to build more flexible language, so what?
+It can be useful to be able to easily tweak the parser or build a more flexible language, so what?
 
 # Generalization
 
 Here we go, our task is to write mathematical expression evaluator that can:
 - Handle arbitrary number of operators
-- Handle arbitrary number of precedence
+- Handle arbitrary number of precedences
 
 The task is not that hard though, our algorithm is:
-1. Write tokenizer
-2. Write parser
+1. Write a tokenizer
+2. Write a parser
 3. Evaluate
 
-## 1. Write tokenizer
+## 1. Writing a tokenizer
 
-Tokenizer is the easiest part of writing evaluator, we just should break up our text into tokens:
+Tokenizer is the easiest part of writing an evaluator, we just need to break up our text into tokens:
 
 ```haskell
 import Data.Char ( isDigit )
@@ -117,17 +117,17 @@ ghci> tokenize "1 + 2 + 3 * 4 <> 5"
 ```
 
 So far so good, it will parse:
-- Operators compound of `+-*<>/!?` chars, for example: <$>, <!>, <>, >, <, */ and so on
+- Operators compound of `+-*<>/!?` characters, for example: <$>, <!>, <>, >, <, */ and so on
 - Integer literals: 1, 2, 3, 4, ...
 - Brackets
 
-## 2. Write parser
+## 2. Writing a parser
 
 Main objective of this article, basically our parser will consist of two components:
-1. Precedence store  - store where 
+1. Precedence store  - where to store 
 2. Expression parser - main logic of the parser
 
-**NOTE**: The parser will not implement unary operations, it's pretty easy to tweak parser to implement it.
+**NOTE**: The parser will not implement unary operations, it's pretty easy to tweak the parser to implement them.
 
 ### What's a Precedence store?
 
@@ -175,24 +175,24 @@ fromList list' =
 
 Wait, why is **scope** even needed? Well, that's the key aspect of generalization, I call it "splitting".
 Still remember the idea of recursive descent? The lower precedence items are compound of higher precedence,
-the naive general algorithm will do as follows:
+the general algorithm will do the following:
 - Pick lowest precedence from the store
 - Remove it from the **scope**
-- Proceed it
+- Process it
 
-And it will work... As far your operators map doesn't contain operators with same precedence:
+And it will work... So far your operators map doesn't contain operators with same precedence:
 ```text
 1 + 2 - 3
 ```
 
 It will successfuly parse (+ 1 2) and return "- 3" as the tail, because `-` has same precedence as the `+`. Why is that so? I'll
-explain it further later, so pay attention!
+explain it in further detail later, so pay attention!
 
 ### Actual parser
 
 We need exactly two things:
 - factor - items with the highest possible precedence
-- expression - items with the lower precedence
+- expression - items with lower precedence
 
 or not two, there's one more thing: AST representation.
 
