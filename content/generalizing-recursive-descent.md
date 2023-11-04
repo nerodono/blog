@@ -2,17 +2,10 @@
 title = 'Generalizing recursive descent'
 description = 'My generalization of the recursive descent parser algorithm'
 date = 2023-11-03T23:09:04+03:00
-draft = true
 +++
 
-# Warning, it's a draft!
-
-This is just for review
-
----
-
 The recursive descent parser is the first algorithm that comes to mind when your task is to write
-expression parser, so, the example grammar of a simple language that can add multiple things will look like this:
+expression parser, so the example grammar of a simple language that can add multiple things will look like this:
 
 ```ebnf
 digit  = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
@@ -54,14 +47,11 @@ It can be useful to be able to easily tweak the parser or build a more flexible 
 
 # Generalization
 
-Here we go, our task is to write mathematical expression evaluator that can:
+The task is to write mathematical expression evaluator that can:
 - Handle arbitrary number of operators
 - Handle arbitrary number of precedences
 
-The task is not that hard though, our algorithm is:
-1. Write a tokenizer
-2. Write a parser
-3. Evaluate
+So the exact algorithm is: write tokenizer (1), write a parser (2), evaluate the result (3)
 
 ## 1. Writing a tokenizer
 
@@ -127,11 +117,11 @@ Main objective of this article, basically our parser will consist of two compone
 1. Precedence store  - where to store 
 2. Expression parser - main logic of the parser
 
-**NOTE**: The parser will not implement unary operations, it's pretty easy to tweak the parser to implement them.
+**NOTE**: The parser will not implement unary operations because they are pretty easy to tweak the parser to implement.
 
 ### What's a Precedence store?
 
-Basically just a map with some additional quirks for hierarchy:
+Just a map with some additional quirks for hierarchy:
 
 ```haskell
 import qualified Data.Map       as M
@@ -156,7 +146,7 @@ splitMin (Store operators scope) =
               -- if number of operators with that precedence is 1
               -- or just subtract one, if there's more\
               let scope' = M.updateWithKey f key scope
-                  f _ v      = if v == 1 then Nothing else Just (v - 1)
+                  f _ v  = if v == 1 then Nothing else Just (v - 1)
               in Just (key, Store operators scope')
 
 lookup :: Operator -> Store -> Precedence
@@ -186,7 +176,7 @@ the general algorithm will do the following:
 - Remove it from the **scope**
 - Process it
 
-And it will work... So far your operators map doesn't contain operators with same precedence:
+And it will work... As far as your operators map doesn't contain operators with same precedence:
 ```text
 1 + 2 - 3
 ```
@@ -200,7 +190,7 @@ We need exactly two things:
 - factor - items with the highest possible precedence
 - expression - items with lower precedence
 
-or not two, there's one more thing: AST representation and evaluation.
+or not two, there's one more thing: AST representation and `eval` function.
 
 ```haskell
 data Expr = EBinary Operator Expr Expr
@@ -237,13 +227,20 @@ expression store =
            undefined
 ```
 
-Key aspect is the `case splitMin store of` part: `splitMin` returns lowest precedence on the `Store`, returns it as the head and whats left as the tail, so we'll go down from lowest to highest precedence.
+Key aspect is the `case splitMin store of` part: `splitMin` returns lowest precedence on the `Store`, returns it as the head and what's left as the tail, so we'll go down from lowest to highest precedences.
 
 Adding factor:
 
 ```haskell
 type Tailed a = Maybe (a, [Token])
 
+-- This function would parse most fundamental things in the expression:
+-- 1. numbers
+-- 2. expressions in the brackets
+--
+-- Referencing our first grammar, it's basically the equivalent to:
+-- factor = digit {digit}
+--        | "(" expression ")";
 factor :: Store -> [Token] -> Tailed Expr
 factor store (h:t) =
     case h of
@@ -266,16 +263,25 @@ factor store (h:t) =
 factor _ [] = Nothing
 
 type ParseF = [Token] -> Tailed Expr
+
 expression :: Store -> [Token] -> Tailed Expr
 expression store =
+    -- Cut head off the store to get least precedence
     case splitMin store of
        Just (precedence, whats_left) ->
            -- We still have ways go to down
+           -- whats_left will contain the remaining precedences
            binary precedence $ expression whats_left
        Nothing ->
-           -- Here we on the factor's precedence
+           -- And eventually we'll fall here, 
+           -- On the factor's precedence - highest precedence possible
            factor store
     where
+       -- Binary function parses binary expressions, obviously
+       -- a {<operator> b}
+       -- ^  ^^^^^^^^^^^^
+       -- term    |
+       --         +-- Any number of operations with the same operand
        binary :: Integer -> ParseF -> [Token] -> Tailed Expr
        binary current_precedence parse tokens =
            parse tokens >>= \(lhs, t) ->
@@ -300,7 +306,7 @@ expression store =
                             , t )
 ```
 
-But wait, will the `binary` parse correctly only the something like `a + b` and `a + b + c` would parse as `(+ a b)` and return `"+ c"` as the tail? Definetely! So we should parse sequential operator application as well:
+But wait, will the `binary` parse correctly only something like `a + b` and `a + b + c` would parse as `(+ a b)` and return `"+ c"` as the tail? Definitely! So taking sequential operator applications into account are required as well:
 
 ```haskell
 type Tailed a = Maybe (a, [Token])
@@ -450,7 +456,7 @@ expression store =
            --     ^^^^^
 ```
 
-Nah, our `store`'s scope is empty at the moment where it gets to the `factor` and `factor` internally can call an `expression`, the result is nested expressions can be only `factor`s:
+Nah, our `store`'s scope is empty at the moment where it gets to the `factor` and `factor` internally can call an `expression`, the result is that nested expressions can only be `factor`s:
 
 ```haskell
 ghci> parseTextAsSExpr "((2)) * 2"
@@ -460,7 +466,7 @@ Just ("(* 2 2)",[])
 ghci>
 ```
 
-So the solution is just to keep track of the **"root"** `scope`:
+The solution is just to keep track of the **"root"** `scope`:
 ```haskell
 import qualified Data.Map       as M
 import qualified Data.Bifunctor as Bi
@@ -485,7 +491,7 @@ splitMin (Store operators scope root) =
               -- if number of operators with that precedence is 1
               -- or just subtract one, if there's more\
               let scope' = M.updateWithKey f key scope
-                  f _ v      = if v == 1 then Nothing else Just (v - 1)
+                  f _ v  = if v == 1 then Nothing else Just (v - 1)
               in Just (key, Store operators scope' root)
 
 restoreRoot :: Store -> Store
@@ -544,7 +550,7 @@ The right answer, nice!
 
 # 3. Evaluate
 
-The last part is evaluation, the easiest since we've done the most
+The last part is evaluation, the easiest, since we've done the most
 
 ```haskell
 evalText :: String -> Integer
