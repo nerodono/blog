@@ -220,7 +220,7 @@ expression :: Store -> [Token] -> Tailed Expr
 expression store =
     case splitMin store of
        Just (precedence, whats_left) ->
-           -- We still have ways go to down
+           -- We still have ways to go down
            undefined
        Nothing ->
            -- Here we on the factor's precedence
@@ -269,7 +269,7 @@ expression store =
     -- Cut head off the store to get least precedence
     case splitMin store of
        Just (precedence, whats_left) ->
-           -- We still have ways go to down
+           -- We still have ways to go down
            -- whats_left will contain the remaining precedences
            binary precedence $ expression whats_left
        Nothing ->
@@ -281,7 +281,7 @@ expression store =
        -- a {<operator> b}
        -- ^  ^^^^^^^^^^^^
        -- term    |
-       --         +-- Any number of operations with the same operand
+       --         +-- Any number of operations with the same operator
        binary :: Integer -> ParseF -> [Token] -> Tailed Expr
        binary current_precedence parse tokens =
            parse tokens >>= \(lhs, t) ->
@@ -344,7 +344,7 @@ expression store =
     -- So actually we return `[Token] -> Tailed Expr`
     case splitMin store of
        Just (precedence, whats_left) ->
-           -- We still have ways go to down
+           -- We still have ways to go down
            binary precedence $ expression whats_left
        Nothing ->
            -- Here we on the factor's precedence
@@ -446,7 +446,7 @@ expression store =
     -- So actually we return `[Token] -> Tailed Expr`
     case splitMin store of
        Just (precedence, whats_left) ->
-           -- We still have ways go to down
+           -- We still have ways to go down
            binary precedence $ expression whats_left
            --                  ^^^^^^^^^^^^^^^^^^^^^
            --                        Cutted off
@@ -529,7 +529,7 @@ expression store =
     -- So actually we return `[Token] -> Tailed Expr`
     case splitMin store of
        Just (precedence, whats_left) ->
-           -- We still have ways go to down
+           -- We still have ways to go down
            binary precedence $ expression whats_left
        Nothing ->
            -- Here we on the factor's precedence
