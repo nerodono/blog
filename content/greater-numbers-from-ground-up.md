@@ -1,6 +1,7 @@
 +++
 title = 'Greater Numbers, From Ground Up'
 date = 2024-02-05T11:10:54+03:00
+description = 'Calculating some really big numbers, from ground up'
 +++
 
 # Note
