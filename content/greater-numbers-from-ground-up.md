@@ -11,6 +11,8 @@ if you are familar with hyperoperation, it may be not that interesting.
 
 For demonstration I'll use `Python` programming language since learning LaTeX just for this article seems irrational.
 
+I am using the word "order" to express "grade" of operation (as it's called on wikipedia).
+
 ---
 
 # Natural numbers
@@ -81,10 +83,10 @@ How should it work? Addition is something that "steals" successor function appli
 - 2 + 2 = 4. `s(s(z)) + s(s(z)) = s(s(s(s(z))))`
 - 1 + 0 = 1. `s(z) + z = s(z)` since `z` has zero applications of successor function
 
-So, our exact algorithm is:
+Our exact algorithm is:
 - for `add(x, z)` return x, since `z` has zero applications of successor function
 - for `add(x, s(y))` we return `s(add(x, y))`. What is the `add(x, s(y))` notation? Since we already defined addition for zero right hand side,
-remaining case is successor function application to some value, so we just unwrap that application.
+remaining case is successor function application to some value, we just unwrap that application.
 
 Let's add `2` to `2` as an example:
 - `s(s(z)) = 2`
@@ -107,7 +109,7 @@ def add(x: int, y: int) -> int:
   return x
 ```
 
-So, let's implement function on **our** natural numbers:
+It's time to implement addition on **our** natural numbers:
 ```python
 def add(lhs: Nat, rhs: Nat) -> Nat:
   if rhs is Z:
@@ -135,7 +137,7 @@ It works as expected
 # Multiplication, exponentiation and tetration (and pentation, and much more)
 
 More interestring part would be writing multiplication, as we may know,
-multiplication of natural numbers is process of adding left hand side right hand side times, so our algorithm would be:
+multiplication of natural numbers is process of adding left hand side right hand side times, our algorithm would be:
 1. If right hand side is zero - return `z`, since adding something zero times is zero
 2. Otherwise, we're dealing with successor on the right hand side, we add left hand side to result of multiplication of left hand
 side and predecessor (unwrapped) value of right hand side
@@ -207,7 +209,7 @@ Testing...
 25
 ```
 
-Let's try something bigger, since we are invented something fast growing:
+Let's try computing bigger numbers, we're just invented quite fast-growing number operation:
 
 ```python
 >>> _2in64 = pow(_2, _64)
@@ -237,7 +239,7 @@ Traceback (most recent call last):
 RecursionError: maximum recursion depth exceeded
 ```
 
-Woops, recursion limit! Let's rewrite our functions as the loops:
+Woops, recursion limit! Rewriting our recursive functions in an iterative approach should help:
 
 ```python
 def add(lhs: Nat, rhs: Nat) -> Nat:
@@ -270,9 +272,9 @@ def pow(lhs: Nat, rhs: Nat) -> Nat:
 ...
 ...
 
-It was quite brave to use our natural numbers to raise 2 in power of 64, since, let's think optimistically: one natural number object
+It was quite brave to use our natural numbers to raise 2 in power of 64, thinking optimistically: one natural number object
 occupies 16 bytes of memory (optimistic measurement!), so, if we want to raise 2 in power of 64, we need ~ `2^64 * 2^4 <=> 2^68` bytes of memory.
-I suppose that's impossible on my machine, so let's limit our appetite to `2^8`
+I suppose that's impossible on my machine, let's limit our appetite to `2^8`
 
 ```python
 >>> _2in8 = pow(_2, mul(_4, _2))
@@ -289,9 +291,10 @@ I will not torment you any loger
 
 # Hyperoperation
 
-Our previous inventions looked really similar, we just use previously defined function in the exact same place, so, actually, it can be simplified.
-But let's rewrite our natural number operations first, so they would be more optimal (addition, multiplication and power), since it would take an eternity
-to compute tetration or pentation.
+Our previous inventions looked really similar, we just used previously defined function to implement next "order" function the same way as
+previous function is defined, so, actually, it can be simplified.
+But we should rewrite our natural number operations first, so they would be more optimal (addition, multiplication and power),
+since it would take an eternity to compute tetration or pentation.
 
 Beware! Arbitrary arithmetic function
 
