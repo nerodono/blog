@@ -11,4 +11,4 @@ My blogging skills isn't good enough, especially in english, so expect older art
 ### Contacts
 
 - Telegram: [@nerodono](https://t.me/nerodono)
-- Github: [@nerodono](https://github.com/nerodono), also my old account was [@kvxmmu](https://github.com/kvxmmu)
+- Github: [@nerodono](https://github.com/nerodono)
